@@ -9,17 +9,15 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
 import com.android.volley.Request.Method;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response.Listener;
 import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
@@ -35,11 +33,14 @@ public class MainActivity extends Activity {
 	}
 
 	static ProgressDialog dialog = null;
+	
+	private RequestQueue mQueue;
 
 	public void requestJson(final Context context) {
-		RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+		mQueue = Volley.newRequestQueue(context);  
+
 		String url = "https://ajax.googleapis.com/ajax/services/search/news?v=1.0&q=android";
-		queue.add(new JsonObjectRequest(Method.GET, url, null,
+		mQueue.add(new JsonObjectRequest(Method.GET, url, null,
 				new Listener<JSONObject>() {
 					@Override
 					public void onResponse(JSONObject jsonRoot) {
@@ -63,12 +64,12 @@ public class MainActivity extends Activity {
 					}
 				}));
 		dialog = loadingDialog("", "now loading ... ");
-		queue.start();
+		mQueue.start();
 	}
 
 	public void requestString(final Context context) {
-		RequestQueue queue = Volley.newRequestQueue(context);
-		queue.add(new StringRequest(Method.POST,
+		mQueue = Volley.newRequestQueue(context);
+		mQueue.add(new StringRequest(Method.POST,
 				"http://search.yahoo.co.jp/search", new Listener<String>() {
 					@Override
 					public void onResponse(String response) {
@@ -101,7 +102,7 @@ public class MainActivity extends Activity {
 		);
 
 		dialog = loadingDialog("", "now loading ... ");
-		queue.start();
+		mQueue.start();
 	}
 
 	public void onClickRequestJson(View view) {
